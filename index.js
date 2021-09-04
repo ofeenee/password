@@ -18,7 +18,7 @@ class Password {
       }
     }
     catch (error) {
-      console.log(error.message);
+      throw error;
     }
   }
 
@@ -32,7 +32,7 @@ class Password {
       }
     }
     catch (error) {
-      console.log(error.message);
+      throw error;
     }
   }
 
@@ -50,7 +50,7 @@ class Password {
       }
     }
     catch (error) {
-      console.log(error.message);
+      throw error;
     }
   }
 
