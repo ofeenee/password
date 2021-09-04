@@ -1,8 +1,8 @@
+import isStrongPassword from 'validator/lib/isStrongPassword.js';
+
 import bcrypt from 'bcrypt';
 const { hashSync, hash, verify } = bcrypt;
 
-import validator from 'validator';
-const { isStrongPassword } = validator;
 
 
 class Password {
