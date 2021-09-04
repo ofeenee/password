@@ -1,0 +1,24 @@
+{
+  "name": "@ofeenee/password",
+  "type": "module",
+  "version": "0.0.2",
+  "description": "A class for validating, verifying, and managing a password... and more.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ofeenee/Class-Password.git"
+  },
+  "author": "ofeenee <ofeenee@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ofeenee/Class-Password/issues"
+  },
+  "homepage": "https://github.com/ofeenee/Class-Password#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "validator": "^13.6.0"
+  }
+}
