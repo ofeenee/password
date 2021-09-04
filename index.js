@@ -1,8 +1,8 @@
 import isStrongPassword from 'validator/lib/isStrongPassword.js';
 
 import bcrypt from 'bcrypt';
-const { hashSync, hash, verify } = bcrypt;
-
+const { hashSync, hash, compare } = bcrypt;
+const saltRounds = 10;
 
 
 class Password {
@@ -11,7 +11,7 @@ class Password {
   constructor(password) {
     try {
       if (isStrongPassword(password)) {
-        this.#password = hashSync(password);
+        this.#password = hashSync(password, saltRounds);
       }
       else {
         throw new Error('Password value is invalid.');
@@ -38,9 +38,9 @@ class Password {
 
   async update(password) {
     try {
-      const match = await verify(this.#password, password);
+      const match = await compare(password, this.#password);
       if (isStrongPassword(password) && !match) {
-        this.#password = await hash(password);
+        this.#password = await hash(password, saltRounds);
       }
       else if (match) {
         throw new Error('update is not necessary.');
