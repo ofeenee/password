@@ -1,11 +1,14 @@
 {
   "name": "@ofeenee/password",
   "type": "module",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A class for validating, verifying, and managing a password... and more.",
-  "main": "index.js",
+  "main": "Password.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha || true"
   },
   "repository": {
     "type": "git",
@@ -18,7 +21,11 @@
   },
   "homepage": "https://github.com/ofeenee/Class-Password#readme",
   "dependencies": {
-    "bcrypt": "^5.0.1",
+    "argon2": "^0.28.2",
     "validator": "^13.6.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.1.1"
   }
 }
