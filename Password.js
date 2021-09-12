@@ -1,18 +1,17 @@
 import validator from 'validator';
 const {isStrongPassword} = validator;
 
-import {hash as argon2Hash, verify as argon2Verify} from 'argon2';
+import {hash as hashPassword, verify as verifyPassword} from 'argon2';
 
 
 function Password() {
   try {
     if (new.target === undefined) return new Password();
-    let hash = null;
 
-    async function comparePassword(string) {
+    const comparePassword = async (string) => {
       try {
         if (validatePassword(string)) {
-          const match = await argon2Verify(hash, string);
+          const match = await verifyPassword(this.hash, string);
           return match;
         }
         else return false
@@ -23,30 +22,36 @@ function Password() {
     }
 
     return Object.defineProperties(this, {
-      validate: {
-        value: validatePassword,
-        enumerable: true
+      hash: {
+        value: null,
+        configurable: true
       },
-      setPassword: {
-        value: async function createHash(string) {
+      set: {
+        value: async (string) => {
           try {
             // if string value is invalid (not strong password)
             if (!validatePassword(string) && !isHash(string)) throw new Error('password value is invalid.');
 
             // if value is the same as current
-            if (hash && isHash(hash)) {
-              if (string === hash || await comparePassword(string)) return hash;
+            if (this.hash && isHash(this.hash)) {
+              if (string === this.hash || await comparePassword(string)) return this.hash;
             }
 
             // assign string as is to hash,
             // or hash plain string then assign it to hash
             if (isHash(string)) {
-              hash = string;
-              return hash;
+              Object.defineProperty(this, 'hash', {
+                value: string,
+                configurable: true
+              });
+              return this.hash;
             }
             else {
-              hash = await argon2Hash(string);
-              return hash;
+              Object.defineProperty(this, 'hash', {
+                value: await hashPassword(string),
+                configurable: true
+              });
+              return this.hash;
             }
           }
           catch (error) {
@@ -55,10 +60,10 @@ function Password() {
         },
         enumerable: true
       },
-      getPassword: {
-        value: function getHash() {
+      get: {
+        value: () => {
           try {
-            if (isHash(hash)) return hash;
+            if (isHash(this.hash)) return this.hash;
             else return null;
           } catch (error) {
             throw error;
@@ -66,7 +71,11 @@ function Password() {
         },
         enumerable: true
       },
-      compare: {
+      validate: {
+        value: validatePassword,
+        enumerable: true
+      },
+      verify: {
         value: comparePassword,
         enumerable: true
       },
@@ -93,8 +102,14 @@ function validatePassword(string) {
 }
 
 function isHash(string) {
-  const regex = new RegExp(/^\$argon2i\$v=19\$m=4096,t=3,p=1\$[0-z+/]{22,22}\$[0-z/+]{43,43}$/);
-  const test = regex.test(string);
-  if (test) return true;
-  else return false;
+  try {
+    if (typeof string !== 'string' || !string) return false;
+    const regex = new RegExp(/^\$argon2i\$v=19\$m=4096,t=3,p=1\$[0-z+/]{22,22}\$[0-z/+]{43,43}$/);
+    const test = regex.test(string);
+    if (test) return true;
+    else return false;
+  }
+  catch (error) {
+    throw error;
+  }
 }
