@@ -26,15 +26,15 @@ describe(`new Password()`, function () {
     assert.instanceOf(password, Password);
   });
 
-  it(`getPassword() should return null`, function () {
-    const currentPassword = password.getPassword();
+  it(`password.get() should return null`, function () {
+    const currentPassword = password.get();
     assert.isNull(currentPassword);
     assert.isDefined(currentPassword);
   });
 
-  it(`setPassword(${validPassword}) to password instance (successfully)`, async function() {
+  it(`password.set(${validPassword}) to hash password then set it (successfully)`, async function() {
     try {
-      const hash = await password.setPassword(validPassword);
+      const hash = await password.set(validPassword);
       assert.isDefined(hash);
       assert.isString(hash);
       assert.notEqual(hash, validPassword);
@@ -44,26 +44,26 @@ describe(`new Password()`, function () {
     }
   });
 
-  it(`setPassword(${invalidPassword}) to password instance (throws error)`, async function() {
+  it(`password.set(${invalidPassword}) to attempt to hash password then set it (throws error)`, async function() {
     try {
-      const hash = await password.setPassword(invalidPassword);
+      const hash = await password.set(invalidPassword);
       assert.fail(`${invalidPassword} is supposed to throw an error, but it did not.`);
 
     } catch (error) {
-      const match = await password.compare(invalidPassword);
-      console.log(match);
+      const match = await password.verify(invalidPassword);
       assert.isFalse(match);
 
       assert.instanceOf(error, Error);
       assert.strictEqual(error.message, 'password value is invalid.');
     }
   });
-  it(`getPassword() value of password instance return the hash of ${validPassword}`, async function() {
+  it(`password.get() should return the hash of ${validPassword}`, async function() {
     try {
-      const hash = password.getPassword();
+      const hash = password.get();
+      console.log(await password.verify(validPassword));
       assert.isDefined(hash);
 
-      const match = await password.compare(validPassword);
+      const match = await password.verify(validPassword);
       assert.isTrue(match);
     }
     catch (error) {
@@ -80,14 +80,14 @@ if (passwordToTest) {
       assert.instanceOf(password, Password);
     });
 
-    it(`getPassword() should return null`, function() {
-      assert.isNull(password.getPassword());
+    it(`get() should return null`, function() {
+      assert.isNull(password.get());
     });
 
     if(isValid) {
-      it(`setPassword(${passwordToTest}) to password instance (valid: successfully)`, async function() {
+      it(`set(${passwordToTest}) to password instance (valid: successfully)`, async function() {
         try {
-          const hash = await password.setPassword(passwordToTest);
+          const hash = await password.set(passwordToTest);
           assert.isString(hash);
           assert.notEqual(hash, passwordToTest);
         }
@@ -96,23 +96,23 @@ if (passwordToTest) {
         }
       });
 
-      it(`getPassword() should return hash value of ${passwordToTest}`, async function() {
+      it(`get() should return hash value of ${passwordToTest}`, async function() {
         try {
-          assert.isTrue(await password.compare(passwordToTest));
+          assert.isTrue(await password.verify(passwordToTest));
         }
         catch (error) {
           assert.fail(error.message);
         }
       });
 
-      it(`setPassword('Kuwait123!) to update current password (successfully)`, async function(){
+      it(`set('Kuwait123!) to update current password (successfully)`, async function(){
         try {
-          const hash = await password.setPassword('Kuwait123!');
+          const hash = await password.set('Kuwait123!');
           assert.isString(hash);
           assert.notEqual(hash, 'Kuwait123!');
 
           // confirm password has been changed successfully
-          const match = await password.compare(passwordToTest);
+          const match = await password.verify(passwordToTest);
           assert.isFalse(match);
         }
         catch (error) {
@@ -120,9 +120,9 @@ if (passwordToTest) {
         }
       });
 
-      it(`setPassword('kuwait123) to update current password (throws error)`, async function() {
+      it(`set('kuwait123) to update current password (throws error)`, async function() {
         try {
-          const hash = await password.setPassword('kuwait123');
+          const hash = await password.set('kuwait123');
           assert.isUndefined(hash);
           assert.fail('set password should have thrown an error, but it did not');
         }
@@ -130,20 +130,20 @@ if (passwordToTest) {
           assert.instanceOf(error, Error);
           assert.equal(error.message, 'password value is invalid.');
 
-          const hash = password.getPassword();
+          const hash = password.get();
           assert.isString(hash);
 
-          const match = await password.compare('kuwait123');
+          const match = await password.verify('kuwait123');
           assert.isFalse(match);
         }
       });
 
       it(`get() should return hash value of Kuwait123!`, async function() {
         try {
-          const hash = password.getPassword();
+          const hash = password.get();
           assert.isString(hash);
 
-          const match = await password.compare('Kuwait123!');
+          const match = await password.verify('Kuwait123!');
           assert.isTrue(match);
         }
         catch (error) {
@@ -154,7 +154,7 @@ if (passwordToTest) {
     else {
       it(`set(${passwordToTest}) to password instance (invalid: throw error)`, async function() {
         try {
-          const hash = await password.setPassword(passwordToTest);
+          const hash = await password.set(passwordToTest);
           assert.isUndefined(hash);
           assert.fail('set password should have thrown an error, but it did not');
         }
@@ -165,7 +165,7 @@ if (passwordToTest) {
       });
 
       it(`get() should return null (password was not set)`, function () {
-        assert.isNull(password.getPassword());
+        assert.isNull(password.get());
       });
     }
 
