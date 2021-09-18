@@ -114,4 +114,4 @@ function isHash(string) {
   }
 }
 
-export {isHash};
+export {isHash, verifyPassword};
