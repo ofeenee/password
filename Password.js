@@ -113,3 +113,5 @@ function isHash(string) {
     throw error;
   }
 }
+
+export {isHash};
