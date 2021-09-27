@@ -4,9 +4,9 @@ const {isStrongPassword} = validator;
 import {hash as hashPassword, verify as verifyPassword} from 'argon2';
 
 
-function Password() {
+function Password(hash = null) {
   try {
-    if (new.target === undefined) return new Password();
+    if (new.target === undefined) return new Password(hash);
 
     const comparePassword = async (string) => {
       try {
@@ -23,7 +23,7 @@ function Password() {
 
     return Object.defineProperties(this, {
       hash: {
-        value: null,
+        value: isHash(hash) ? hash : null,
         configurable: true
       },
       set: {
@@ -93,7 +93,7 @@ export default Password;
 // HELPER FUNCTIONS
 function validatePassword(string) {
   try {
-    if (typeof string !== 'string' || !string) throw new Error('value is invalid.');
+    if (typeof string !== 'string' || !string) return false;
     return isStrongPassword(string);
   }
   catch (error) {
