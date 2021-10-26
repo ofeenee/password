@@ -71,10 +71,6 @@ function Password(hash = null) {
         },
         enumerable: true
       },
-      validate: {
-        value: validatePassword,
-        enumerable: true
-      },
       verify: {
         value: comparePassword,
         enumerable: true
@@ -85,6 +81,13 @@ function Password(hash = null) {
     throw error;
   }
 }
+
+Object.defineProperties(Password, {
+  validate: {
+    value: validatePassword,
+    enumerable: true
+  }
+});
 
 export default Password;
 
